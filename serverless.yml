@@ -1,0 +1,39 @@
+service: sl-order-gateway
+provider:
+  name: aws
+  runtime: nodejs4.3
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  environment:
+    SERVICE_NAME: ${self:service}
+    sqs_event: ${self:custom.globals.sqs.order}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:*"
+      Resource: "*"    
+# you can add packaging information here
+package:
+  individually: true
+  exclude:
+    - ./**
+
+functions:
+  ${file(src/index.yml)}
+
+plugins:
+  - serverless-dotenv-plugin
+
+custom:
+  globals:
+    role: ${self:service}-${self:provider.stage}-role
+    sqs:
+      order: ${self:service}-events-${self:provider.stage}
+
+resources:
+  ${file(resources/resources.yml)}
+
+aws:
+  id: ${env:AWS_ID}
+  secret: ${env:AWS_SECRET}

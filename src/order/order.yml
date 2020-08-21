@@ -1,0 +1,11 @@
+queue_input:
+  handler: src/order/handler_input/handler.input
+  events:
+    - http:
+        path: queue_input
+        method: post
+        cors: true
+  package:
+    include:
+      - src/order/handler_input/handler.js
+      - src/libs/**

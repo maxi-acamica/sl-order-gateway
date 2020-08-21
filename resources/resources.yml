@@ -1,0 +1,3 @@
+## Register resources
+- ${file(resources/order.yml)}
+- ${file(resources/role.yml)}

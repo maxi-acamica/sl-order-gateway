@@ -1,0 +1,11 @@
+{
+    "name": "sl-order-gateway",
+    "version": "1.0.0",
+    "description": "api for orders",
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "serverless-dotenv-plugin": "^2.4.2"
+    }
+  }
+  

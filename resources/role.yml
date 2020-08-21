@@ -1,0 +1,10 @@
+Resources:
+  DeliveryStreamRole:
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: Delete
+    Properties:
+      RoleName: ${self:custom.globals.role}
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/AmazonESFullAccess"
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
