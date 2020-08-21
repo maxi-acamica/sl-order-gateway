@@ -7,5 +7,5 @@ queue_input:
         cors: true
   package:
     include:
-      - src/order/handler_input/handler.js
+      - src/order/handler_input/handler.ts
       - src/libs/**
