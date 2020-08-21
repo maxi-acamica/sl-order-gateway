@@ -22,7 +22,7 @@ const input: APIGatewayProxyHandler = async (event, context) => {
 
   try {
     await sqs.sendMessage({
-      QueueName: queueName,
+      QueueUrl: queueUrl,
       MessageBody: event.body,
     }).promise();
 
