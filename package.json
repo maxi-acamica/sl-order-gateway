@@ -1,0 +1,26 @@
+{
+    "name": "sl-order-gateway",
+    "version": "1.0.0",
+    "description": "api for orders",
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "aws-lambda": "^0.1.2",
+        "aws-sdk": "^2.553.0",
+        "source-map-support": "^0.5.10"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.17",
+        "@types/node": "^10.14.22",
+        "eslint": "^6.6.0",
+        "serverless-webpack": "^5.2.0",
+        "sinon": "^9.0.3",
+        "ts-loader": "^5.3.3",
+        "tslint": "^5.20.0",
+        "tslint-config-airbnb": "^5.11.2",
+        "typescript": "^3.2.4",
+        "webpack": "^4.29.0",
+        "chai": "^4.2.0",
+        "mocha": "^8.1.1"
+    }
+}

@@ -1,0 +1,21 @@
+Resources:
+  OrderQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      DelaySeconds: 5
+      MessageRetentionPeriod: 345600
+      QueueName: ${self:custom.globals.sqs.order}
+      ReceiveMessageWaitTimeSeconds: 5
+      VisibilityTimeout: 10
+      RedrivePolicy:
+        deadLetterTargetArn:
+          "Fn::GetAtt":
+            - OrderDeadLetterQueue
+            - Arn
+        maxReceiveCount: 30
+
+  OrderDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ${self:custom.globals.sqs.order}-dlq
+      MessageRetentionPeriod: 345600 # 4 days in seconds
