@@ -1,25 +1,32 @@
+name: Deploy Serverless
 on:
   push:
     branches:
       - master
-name: Deploy master branch
 jobs:
   deploy:
-    name: deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - run: echo //registry.npmjs.org/:_authToken=${{ secrets.npm_token }} > .npmrc
-    - run: npm install
-    - run: npm run build
-    - name: serverless deploy
-      uses: serverless/github-action@master
-      with:
-        args: deploy
-      env:
-        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name: Install Serverless Framework
+      run: npm install -g serverless
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
+    - name: Create env file
+      run: | # cp .env.example .env
+        cat > .env << EOF
+        ${{ secrets.ENV }}
+        EOF
+    - name: Install NPM dependencies
+      run: npm install
+    # Optional
+    #- name: Build assets
+    #  run: npm run assets-dev
+    - name: Deploy Lambda functions
+      run: sls deploy -s dev
+    # Optional (to use with serverless-finch serverless plugin)
+    #- name: Deploy assets to S3
+    #  run: sls client deploy --no-delete-contents --no-confirm -s dev

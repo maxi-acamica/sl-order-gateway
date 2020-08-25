@@ -2,13 +2,15 @@
     "name": "sl-order-gateway",
     "version": "1.0.0",
     "description": "api for orders",
-    "author": "",
+    "author": "Maxi Acamica",
     "license": "ISC",
     "dependencies": {
         "aws-lambda": "^0.1.2",
         "aws-sdk": "^2.553.0",
         "serverless-plugin-typescript": "^1.1.9",
         "source-map-support": "^0.5.10",
+        "typescript": "^3.2.4",
+        "webpack": "^4.29.0",
         "webpack-cli": "^3.3.12"
     },
     "devDependencies": {
