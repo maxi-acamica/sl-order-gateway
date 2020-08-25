@@ -13,6 +13,8 @@ jobs:
         node-version: '12.x'
     - name: Install Serverless Framework
       run: npm install -g serverless
+    - name: Install NPM dependencies
+      run: npm install
     - name: Serverless AWS authentication
       run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
@@ -20,8 +22,6 @@ jobs:
         cat > .env << EOF
         ${{ secrets.ENV }}
         EOF
-    - name: Install NPM dependencies
-      run: npm install
     # Optional
     #- name: Build assets
     #  run: npm run assets-dev
