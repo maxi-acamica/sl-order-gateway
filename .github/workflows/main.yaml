@@ -17,7 +17,6 @@ jobs:
     - run: npm run build
     - name: serverless deploy
       uses: serverless/github-action@master
-    - run: serverless deploy # deploys your service   
       with:
         args: deploy
       env:
