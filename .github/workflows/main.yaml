@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - master
+name: Deploy master branch
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: npm install
+      uses: actions/npm@master
+      with:
+        node-version: '12.x'
+    - run: echo //registry.npmjs.org/:_authToken=${{ secrets.npm_token }} > .npmrc
+    - run: npm install
+    - name: Package
+        args: install
+    - name: serverless deploy
+      uses: serverless/github-action@master
+    - run: serverless deploy # deploys your service   
+      with:
+        args: deploy
+      env:
+        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

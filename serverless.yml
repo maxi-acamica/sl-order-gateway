@@ -1,7 +1,7 @@
 service: sl-order-gateway
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: ${env:STAGE}
   region: ${env:REGION}
   environment:

@@ -7,6 +7,9 @@ const input: APIGatewayProxyHandler = async (event, context) => {
   let statusCode: number = 200;
   let message: string;
 
+  // debgu Mode
+  console.log(event, context);
+
   if (!event.body) {
     return {
       statusCode: 400,
