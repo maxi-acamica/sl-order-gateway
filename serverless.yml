@@ -16,8 +16,6 @@ provider:
 # you can add packaging information here
 package:
   individually: true
-  exclude:
-    - ./**
 
 functions:
   ${file(src/index.yml)}
