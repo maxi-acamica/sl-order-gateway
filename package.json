@@ -8,6 +8,7 @@
         "aws-lambda": "^0.1.2",
         "aws-sdk": "^2.553.0",
         "serverless-plugin-typescript": "^1.1.9",
+        "serverless-dotenv-plugin": "^3.0.0",
         "source-map-support": "^0.5.10",
         "typescript": "^3.2.4",
         "webpack": "^4.29.0",
