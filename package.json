@@ -30,6 +30,6 @@
     "scripts": {
         "offline": "serverless offline --env dev",
         "lint": "tslint -p tsconfig.json -c tslint.json",
-        "build": "webpack"
+        "build": "serverless package"
     }
 }

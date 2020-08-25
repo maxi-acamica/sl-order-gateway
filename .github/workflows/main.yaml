@@ -8,13 +8,13 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: npm install
-      uses: actions/npm@master
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
     - run: echo //registry.npmjs.org/:_authToken=${{ secrets.npm_token }} > .npmrc
     - run: npm install
+    - run: npm run build
     - name: serverless deploy
       uses: serverless/github-action@master
     - run: serverless deploy # deploys your service   
