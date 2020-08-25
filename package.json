@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.17",
-        "@types/node": "^12.14.22",
+        "@types/node": "^12.12.6",
         "chai": "^4.2.0",
         "eslint": "^6.6.0",
         "mocha": "^8.1.1",
