@@ -15,13 +15,13 @@ jobs:
       run: npm install -g serverless
     - name: Install NPM dependencies
       run: npm install
-    - name: Serverless AWS authentication
-      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
       run: | # cp .env.example .env
         cat > .env << EOF
         ${{ secrets.ENV }}
         EOF
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     # Optional
     #- name: Build assets
     #  run: npm run assets-dev
