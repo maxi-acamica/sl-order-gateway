@@ -44,4 +44,4 @@ const input: APIGatewayProxyHandler = async (event, context) => {
   };
 };
 
-export default input;
+export default  input;

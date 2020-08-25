@@ -1,0 +1,1 @@
+export { default as input } from './handler_input/handler';
