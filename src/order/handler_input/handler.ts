@@ -3,18 +3,22 @@ import { SQS } from 'aws-sdk';
 
 const sqs = new SQS();
 
-const inputOrder: APIGatewayProxyHandler = async (event, context) => {
+const input: APIGatewayProxyHandler = async (event, context) => {
   let statusCode: number = 200;
   let message: string;
-  console.log("lalalala ")
-  if (!event.body) {
 
+  if (!event.body) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: 'No body was found',
+      }),
+    };
   }
   
   const region = context.invokedFunctionArn.split(':')[3];
   const accountId = context.invokedFunctionArn.split(':')[4];
   const queueName: string = 'OrderQueue';
-  
   const queueUrl: string = `https://sqs.${region}.amazonaws.com/${accountId}/${queueName}`
   
 
@@ -40,4 +44,4 @@ const inputOrder: APIGatewayProxyHandler = async (event, context) => {
   };
 };
 
-export default inputOrder;
+export default input;

@@ -26,6 +26,7 @@
         "webpack": "^4.29.0"
     },
     "scripts": {
-        "offline": "serverless offline --env dev"
+        "offline": "serverless offline --env dev",
+        "lint": "tslint -p tsconfig.json -c tslint.json"
       }
 }

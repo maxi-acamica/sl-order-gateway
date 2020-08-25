@@ -1,5 +1,5 @@
 queue_order:
-  handler: src/order/handler_input/handler.inputOrder
+  handler: src/order/handler_input/handler.input
   events:
     - http:
         path: queue_order
