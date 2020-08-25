@@ -1,7 +1,7 @@
 service: sl-order-gateway
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: ${env:STAGE}
   region: ${env:REGION}
   environment:
@@ -24,6 +24,7 @@ functions:
 
 plugins:
   - serverless-dotenv-plugin
+  - serverless-offline
 
 custom:
   globals:
@@ -34,6 +35,3 @@ custom:
 resources:
   ${file(resources/resources.yml)}
 
-aws:
-  id: ${env:AWS_ID}
-  secret: ${env:AWS_SECRET}

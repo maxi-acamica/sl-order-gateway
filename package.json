@@ -12,15 +12,20 @@
     "devDependencies": {
         "@types/aws-lambda": "^8.10.17",
         "@types/node": "^10.14.22",
+        "chai": "^4.2.0",
         "eslint": "^6.6.0",
+        "mocha": "^8.1.1",
+        "serverless-dotenv-plugin": "^3.0.0",
+        "serverless-offline": "^6.5.0",
         "serverless-webpack": "^5.2.0",
         "sinon": "^9.0.3",
         "ts-loader": "^5.3.3",
         "tslint": "^5.20.0",
         "tslint-config-airbnb": "^5.11.2",
         "typescript": "^3.2.4",
-        "webpack": "^4.29.0",
-        "chai": "^4.2.0",
-        "mocha": "^8.1.1"
-    }
+        "webpack": "^4.29.0"
+    },
+    "scripts": {
+        "offline": "serverless offline --env dev"
+      }
 }
