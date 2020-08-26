@@ -1,0 +1,128 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform:
+- AWS::Serverless-2016-10-31
+
+Parameters:
+  ProjectId:
+    Type: String
+    Description: AWS CodeStar projectID used to associate new resources to team members
+    Default: sl-checkout
+  Stage:
+    Type: String
+    Description: The name for a project pipeline stage, such as staging or production, for which resources are provisioned and deployed.
+    Default: ''
+  GitHash:
+    Type: String
+    Description: Githash deployed
+    Default: ''
+  BasePath:
+    Type: String
+    Description: Base Path Mapping for the API 
+    Default: 'checkout'
+
+Globals:
+  Function:
+    AutoPublishAlias: live
+    DeploymentPreference:
+      Enabled: true
+      Type: AllAtOnce
+
+Resources:
+  CheckoutService:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Stage}_${ProjectId}"
+      Handler: index.handler
+      Runtime: nodejs12.x
+      #MemorySize: !Sub '{{resolve:ssm:/${Stage}/memory-size/medium:1}}'
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          NODE_ENV: production
+          DEBUG: 0
+          STAGE_ENVIRONMENT: !Sub "${Stage}"
+          GIT_HASH: !Sub "${GitHash}"
+          PROJECT_ID: !Sub "${ProjectId}"
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      VpcConfig:
+        SecurityGroupIds:
+          - !Sub '{{resolve:ssm:/${Stage}/vpc/security-group:1}}'
+        SubnetIds:
+          - !Sub '{{resolve:ssm:/${Stage}/vpc/subnet-1:1}}'
+          - !Sub '{{resolve:ssm:/${Stage}/vpc/subnet-2:1}}'
+          - !Sub '{{resolve:ssm:/${Stage}/vpc/subnet-3:1}}'
+      Events:           
+        DefaultEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId: !Ref API
+        ProxyEvent:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref API
+
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Sub '${Stage}-${ProjectId}'
+      OpenApiVersion: '2.0'
+      Cors:
+        AllowHeaders: "'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization'" 
+        AllowOrigin: "'*'"
+
+  APIBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: !Sub '${BasePath}'
+      DomainName: !Sub '{{resolve:ssm:/${Stage}/domain-name:1}}'
+      RestApiId: !Ref API
+      Stage: !Ref API.Stage
+
+  LambdaExecutionRole:
+    Description: Creating service role in IAM for AWS Lambda
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectId}-Execution-${Stage}'
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [lambda.amazonaws.com]
+          Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+
+  MyScalableTarget: 
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 100
+      MinCapacity: 1
+      ResourceId: !Sub function:${CheckoutService}:live # You NEED TO REPLACE IT and specify an alias or version here
+      RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/lambda.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_Lambda
+      ScalableDimension: lambda:function:ProvisionedConcurrency
+      ServiceNamespace: lambda
+    DependsOn: CheckoutServiceAliaslive # This is your function logical ID + "Alias" + what you use for AutoPublishAlias, NEEDS TO BE REPLACED
+
+  MyTargetTrackingScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: utilization
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref MyScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 0.70 # Any value between 0 and 1 can be used here
+        PredefinedMetricSpecification:
+          PredefinedMetricType: LambdaProvisionedConcurrencyUtilization
