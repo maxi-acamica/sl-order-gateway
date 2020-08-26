@@ -32,7 +32,7 @@
     "scripts": {
         "offline": "serverless offline --env dev",
         "lint": "tslint -p tsconfig.json -c tslint.json",
-        "build": "serverless package",
-        "postbuild": "mkdir dist && cp .webpack/service/src/order/* dist/ && cp template.yml dist/"
+        "build": "serverless webpack",
+        "postbuild": "mkdir dist && cp .webpack/queue_order/src/order/* dist/ && cp template.yml dist/"
     }
 }
