@@ -21,9 +21,9 @@ functions:
   ${file(src/index.yml)}
 
 plugins:
-  - serverless-dotenv-plugin
   - serverless-webpack
-  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-dotenv-plugin
 
 custom:
   globals:
