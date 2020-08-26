@@ -22,7 +22,7 @@ functions:
 
 plugins:
   - serverless-dotenv-plugin
-  - serverless-offline
+  - serverless-webpack
   - serverless-plugin-typescript
 
 custom:
@@ -30,6 +30,10 @@ custom:
     role: ${self:service}-${self:provider.stage}-role
     sqs:
       order: ${self:service}-order-${self:provider.stage}
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules: false   # Node modules configuration for packaging
+    packager: 'npm'   # Packager that will be used to package your external modules
 
 resources:
   ${file(resources/resources.yml)}
