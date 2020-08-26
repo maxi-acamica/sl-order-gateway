@@ -11,6 +11,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
+    - run: curl -sL https://sentry.io/get-cli/ | bash
+    - run: echo //registry.npmjs.org/:_authToken=${{ secrets.npm_token }} > .npmrc
     - name: Install Serverless Framework
       run: npm install -g serverless
     - name: Install NPM dependencies
