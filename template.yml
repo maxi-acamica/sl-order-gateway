@@ -32,7 +32,7 @@ Resources:
   QueueUnderscoreorderLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
-      LogGroupName: /aws/lambda/sl-order-gateway-dev-queue_order
+      LogGroupName: /aws/lambda/sl-order-gateway-stage-queue_order
   IamRoleLambdaExecution:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -50,7 +50,7 @@ Resources:
             'Fn::Join':
               - '-'
               - - sl-order-gateway
-                - dev
+                - stage
                 - lambda
           PolicyDocument:
             Version: '2012-10-17'
@@ -61,13 +61,13 @@ Resources:
                   - 'logs:CreateLogGroup'
                 Resource:
                   - 'Fn::Sub': >-
-                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-dev*:*
+                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*
               - Effect: Allow
                 Action:
                   - 'logs:PutLogEvents'
                 Resource:
                   - 'Fn::Sub': >-
-                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-dev*:*:*
+                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*:*
               - Effect: Allow
                 Action:
                   - 'sqs:*'
@@ -77,7 +77,7 @@ Resources:
         'Fn::Join':
           - '-'
           - - sl-order-gateway
-            - dev
+            - stage
             - Ref: 'AWS::Region'
             - lambdaRole
   QueueUnderscoreorderLambdaFunction:
@@ -87,8 +87,8 @@ Resources:
         S3Bucket:
           Ref: ServerlessDeploymentBucket
         S3Key: >-
-          serverless/sl-order-gateway/dev/1598552574614-2020-08-27T18:22:54.614Z/queue_order.zip
-      FunctionName: sl-order-gateway-dev-queue_order
+          serverless/sl-order-gateway/stage/1598565520603-2020-08-27T21:58:40.603Z/queue_order.zip
+      FunctionName: sl-order-gateway-stage-queue_order
       Handler: src/order/index.input
       MemorySize: 1024
       Role:
@@ -100,24 +100,22 @@ Resources:
       Environment:
         Variables:
           SERVICE_NAME: sl-order-gateway
-          sqs_event: sl-order-gateway-order-dev
-          STAGE: dev
+          sqs_event: sl-order-gateway-stage
+          STAGE: stage
           REGION: us-east-1
-      Layers:
-        - Ref: TestLambdaLayer
     DependsOn:
       - QueueUnderscoreorderLogGroup
-  QueueUnderscoreorderLambdaVersionYiKUy5Wb5NVGu5mGA4m9QmxiujcqZZhurdBtl8mc:
+  QueueUnderscoreorderLambdaVersion3SEOTNJMrpgidXfI40GpJ1lVJ4ocqm1hruwzHxzYg:
     Type: 'AWS::Lambda::Version'
     DeletionPolicy: Retain
     Properties:
       FunctionName:
         Ref: QueueUnderscoreorderLambdaFunction
-      CodeSha256: IiY6du/PKxzwjZYtESzVT4tzacYwPlnFvPeaXk+PMT8=
+      CodeSha256: KOJCrKsmWtoJvWUwz4QhIXXWDdQmGoFtUS8eUpUnlUk=
   ApiGatewayRestApi:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: dev-sl-order-gateway
+      Name: stage-sl-order-gateway
       EndpointConfiguration:
         Types:
           - EDGE
@@ -197,12 +195,12 @@ Resources:
                   - Arn
               - /invocations
       MethodResponses: []
-  ApiGatewayDeployment1598552564544:
+  ApiGatewayDeployment1598565510444:
     Type: 'AWS::ApiGateway::Deployment'
     Properties:
       RestApiId:
         Ref: ApiGatewayRestApi
-      StageName: dev
+      StageName: stage
     DependsOn:
       - ApiGatewayMethodQueueorderOptions
       - ApiGatewayMethodQueueorderPost
@@ -232,7 +230,7 @@ Resources:
     Properties:
       DelaySeconds: 5
       MessageRetentionPeriod: 345600
-      QueueName: sl-order-gateway-order-dev
+      QueueName: sl-order-gateway-stage
       ReceiveMessageWaitTimeSeconds: 5
       VisibilityTimeout: 10
       RedrivePolicy:
@@ -244,17 +242,26 @@ Resources:
   OrderDeadLetterQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
-      QueueName: sl-order-gateway-order-dev-dlq
+      QueueName: sl-order-gateway-stage-dlq
       MessageRetentionPeriod: 345600
   DeliveryStreamRole:
     Type: 'AWS::IAM::Role'
     DeletionPolicy: Delete
     Properties:
-      RoleName: sl-order-gateway-dev-role
+      RoleName: sl-order-gateway-stage-role
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - 'arn:aws:iam::aws:policy/AmazonSQSFullAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
 Outputs:
   ServerlessDeploymentBucketName:
     Value:
@@ -263,7 +270,7 @@ Outputs:
     Description: Current Lambda function version
     Value:
       Ref: >-
-        QueueUnderscoreorderLambdaVersionYiKUy5Wb5NVGu5mGA4m9QmxiujcqZZhurdBtl8mc
+        QueueUnderscoreorderLambdaVersion3SEOTNJMrpgidXfI40GpJ1lVJ4ocqm1hruwzHxzYg
   ServiceEndpoint:
     Description: URL of the service endpoint
     Value:
@@ -275,4 +282,4 @@ Outputs:
           - Ref: 'AWS::Region'
           - .
           - Ref: 'AWS::URLSuffix'
-          - /dev
+          - /stage

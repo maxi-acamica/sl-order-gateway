@@ -21,7 +21,7 @@ const input: APIGatewayProxyHandler = async (event, context) => {
   
   const region = context.invokedFunctionArn.split(':')[3];
   const accountId = context.invokedFunctionArn.split(':')[4];
-  const queueName: string = 'OrderQueue';
+  const queueName: string = 'sl-order-gateway-'+process.env.STAGE;
   const queueUrl: string = `https://sqs.${region}.amazonaws.com/${accountId}/${queueName}`
   
 

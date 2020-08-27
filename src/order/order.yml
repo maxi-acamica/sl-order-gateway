@@ -5,6 +5,4 @@ queue_order:
         path: queue_order
         method: post
         cors: true
-  layers:
-  - { Ref: TestLambdaLayer } 
 

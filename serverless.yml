@@ -22,14 +22,13 @@ functions:
 
 plugins:
   - serverless-webpack
-  - serverless-offline
   - serverless-dotenv-plugin
 
 custom:
   globals:
     role: ${self:service}-${self:provider.stage}-role
     sqs:
-      order: ${self:service}-order-${self:provider.stage}
+      order: ${self:service}-${self:provider.stage}
   webpack:
     webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
     includeModules: false   # Node modules configuration for packaging
