@@ -1,100 +1,92 @@
-﻿AWSTemplateFormatVersion: '2010-09-09'
-Description: The AWS CloudFormation template for this Serverless application
+﻿Description: The AWS CloudFormation template for this Serverless application
 Resources:
   ServerlessDeploymentBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
   ServerlessDeploymentBucketPolicy:
-    Type: 'AWS::S3::BucketPolicy'
+    Type: AWS::S3::BucketPolicy
     Properties:
       Bucket:
         Ref: ServerlessDeploymentBucket
       PolicyDocument:
         Statement:
-          - Action: 's3:*'
-            Effect: Deny
-            Principal: '*'
-            Resource:
-              - 'Fn::Join':
-                  - ''
-                  - - 'arn:'
-                    - Ref: 'AWS::Partition'
-                    - ':s3:::'
-                    - Ref: ServerlessDeploymentBucket
-                    - /*
-            Condition:
-              Bool:
-                'aws:SecureTransport': false
+        - Action: s3:*
+          Effect: Deny
+          Principal: '*'
+          Resource:
+          - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - ':s3:::'
+              - Ref: ServerlessDeploymentBucket
+              - /*
+          Condition:
+            Bool:
+              aws:SecureTransport: false
   QueueUnderscoreorderLogGroup:
-    Type: 'AWS::Logs::LogGroup'
+    Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /aws/lambda/sl-order-gateway-stage-queue_order
   IamRoleLambdaExecution:
-    Type: 'AWS::IAM::Role'
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
       Policies:
-        - PolicyName:
-            'Fn::Join':
-              - '-'
-              - - sl-order-gateway
-                - stage
-                - lambda
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'logs:CreateLogStream'
-                  - 'logs:CreateLogGroup'
-                Resource:
-                  - 'Fn::Sub': >-
-                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*
-              - Effect: Allow
-                Action:
-                  - 'logs:PutLogEvents'
-                Resource:
-                  - 'Fn::Sub': >-
-                      arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*:*
-              - Effect: Allow
-                Action:
-                  - 'sqs:*'
-                Resource: '*'
-      Path: /
-      RoleName:
-        'Fn::Join':
+      - PolicyName:
+          Fn::Join:
           - '-'
           - - sl-order-gateway
             - stage
-            - Ref: 'AWS::Region'
-            - lambdaRole
+            - lambda
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            Resource:
+            - Fn::Sub: arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*
+          - Effect: Allow
+            Action:
+            - logs:PutLogEvents
+            Resource:
+            - Fn::Sub: arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sl-order-gateway-stage*:*:*
+          - Effect: Allow
+            Action:
+            - sqs:*
+            Resource: '*'
+      Path: /
+      RoleName:
+        Fn::Join:
+        - '-'
+        - - sl-order-gateway
+          - stage
+          - Ref: AWS::Region
+          - lambdaRole
   QueueUnderscoreorderLambdaFunction:
-    Type: 'AWS::Lambda::Function'
+    Type: AWS::Lambda::Function
     Properties:
-      Code:
-        S3Bucket:
-          Ref: ServerlessDeploymentBucket
-        S3Key: >-
-          serverless/sl-order-gateway/stage/1598565520603-2020-08-27T21:58:40.603Z/queue_order.zip
       FunctionName: sl-order-gateway-stage-queue_order
       Handler: src/order/index.input
       MemorySize: 1024
       Role:
-        'Fn::GetAtt':
-          - IamRoleLambdaExecution
-          - Arn
+        Fn::GetAtt:
+        - IamRoleLambdaExecution
+        - Arn
       Runtime: nodejs12.x
       Timeout: 6
       Environment:
@@ -102,46 +94,49 @@ Resources:
           SERVICE_NAME: sl-order-gateway
           sqs_event: sl-order-gateway-stage
           STAGE: stage
-          REGION: us-east-1
+          REGION: sa-east-1
+      Code:
+        S3Bucket: serverless-bucket-frame
+        S3Key: d1c769163a0872364f2058a09dc0a869
     DependsOn:
-      - QueueUnderscoreorderLogGroup
+    - QueueUnderscoreorderLogGroup
   QueueUnderscoreorderLambdaVersion3SEOTNJMrpgidXfI40GpJ1lVJ4ocqm1hruwzHxzYg:
-    Type: 'AWS::Lambda::Version'
+    Type: AWS::Lambda::Version
     DeletionPolicy: Retain
     Properties:
       FunctionName:
         Ref: QueueUnderscoreorderLambdaFunction
       CodeSha256: KOJCrKsmWtoJvWUwz4QhIXXWDdQmGoFtUS8eUpUnlUk=
   ApiGatewayRestApi:
-    Type: 'AWS::ApiGateway::RestApi'
+    Type: AWS::ApiGateway::RestApi
     Properties:
       Name: stage-sl-order-gateway
       EndpointConfiguration:
         Types:
-          - EDGE
+        - EDGE
       Policy: ''
   ApiGatewayResourceQueueorder:
-    Type: 'AWS::ApiGateway::Resource'
+    Type: AWS::ApiGateway::Resource
     Properties:
       ParentId:
-        'Fn::GetAtt':
-          - ApiGatewayRestApi
-          - RootResourceId
+        Fn::GetAtt:
+        - ApiGatewayRestApi
+        - RootResourceId
       PathPart: queue_order
       RestApiId:
         Ref: ApiGatewayRestApi
   ApiGatewayMethodQueueorderOptions:
-    Type: 'AWS::ApiGateway::Method'
+    Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: NONE
       HttpMethod: OPTIONS
       MethodResponses:
-        - StatusCode: '200'
-          ResponseParameters:
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Methods: true
-          ResponseModels: {}
+      - StatusCode: '200'
+        ResponseParameters:
+          method.response.header.Access-Control-Allow-Origin: true
+          method.response.header.Access-Control-Allow-Headers: true
+          method.response.header.Access-Control-Allow-Methods: true
+        ResponseModels: {}
       RequestParameters: {}
       Integration:
         Type: MOCK
@@ -149,27 +144,24 @@ Resources:
           application/json: '{statusCode:200}'
         ContentHandling: CONVERT_TO_TEXT
         IntegrationResponses:
-          - StatusCode: '200'
-            ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-              method.response.header.Access-Control-Allow-Headers: >-
-                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'
-              method.response.header.Access-Control-Allow-Methods: '''OPTIONS,POST'''
-            ResponseTemplates:
-              application/json: >-
-                #set($origin = $input.params("Origin"))
+        - StatusCode: '200'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: '''*'''
+            method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'''
+            method.response.header.Access-Control-Allow-Methods: '''OPTIONS,POST'''
+          ResponseTemplates:
+            application/json: '#set($origin = $input.params("Origin"))
 
-                #if($origin == "") #set($origin = $input.params("origin")) #end
+              #if($origin == "") #set($origin = $input.params("origin")) #end
 
-                #if($origin.matches(".+"))
-                #set($context.responseOverride.header.Access-Control-Allow-Origin
-                = $origin) #end
+              #if($origin.matches(".+")) #set($context.responseOverride.header.Access-Control-Allow-Origin
+              = $origin) #end'
       ResourceId:
         Ref: ApiGatewayResourceQueueorder
       RestApiId:
         Ref: ApiGatewayRestApi
   ApiGatewayMethodQueueorderPost:
-    Type: 'AWS::ApiGateway::Method'
+    Type: AWS::ApiGateway::Method
     Properties:
       HttpMethod: POST
       RequestParameters: {}
@@ -183,50 +175,50 @@ Resources:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          'Fn::Join':
-            - ''
-            - - 'arn:'
-              - Ref: 'AWS::Partition'
-              - ':apigateway:'
-              - Ref: 'AWS::Region'
-              - ':lambda:path/2015-03-31/functions/'
-              - 'Fn::GetAtt':
-                  - QueueUnderscoreorderLambdaFunction
-                  - Arn
-              - /invocations
+          Fn::Join:
+          - ''
+          - - 'arn:'
+            - Ref: AWS::Partition
+            - ':apigateway:'
+            - Ref: AWS::Region
+            - :lambda:path/2015-03-31/functions/
+            - Fn::GetAtt:
+              - QueueUnderscoreorderLambdaFunction
+              - Arn
+            - /invocations
       MethodResponses: []
   ApiGatewayDeployment1598565510444:
-    Type: 'AWS::ApiGateway::Deployment'
+    Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId:
         Ref: ApiGatewayRestApi
       StageName: stage
     DependsOn:
-      - ApiGatewayMethodQueueorderOptions
-      - ApiGatewayMethodQueueorderPost
+    - ApiGatewayMethodQueueorderOptions
+    - ApiGatewayMethodQueueorderPost
   QueueUnderscoreorderLambdaPermissionApiGateway:
-    Type: 'AWS::Lambda::Permission'
+    Type: AWS::Lambda::Permission
     Properties:
       FunctionName:
-        'Fn::GetAtt':
-          - QueueUnderscoreorderLambdaFunction
-          - Arn
-      Action: 'lambda:InvokeFunction'
+        Fn::GetAtt:
+        - QueueUnderscoreorderLambdaFunction
+        - Arn
+      Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn:
-        'Fn::Join':
-          - ''
-          - - 'arn:'
-            - Ref: 'AWS::Partition'
-            - ':execute-api:'
-            - Ref: 'AWS::Region'
-            - ':'
-            - Ref: 'AWS::AccountId'
-            - ':'
-            - Ref: ApiGatewayRestApi
-            - /*/*
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: ApiGatewayRestApi
+          - /*/*
   OrderQueue:
-    Type: 'AWS::SQS::Queue'
+    Type: AWS::SQS::Queue
     Properties:
       DelaySeconds: 5
       MessageRetentionPeriod: 345600
@@ -235,33 +227,33 @@ Resources:
       VisibilityTimeout: 10
       RedrivePolicy:
         deadLetterTargetArn:
-          'Fn::GetAtt':
-            - OrderDeadLetterQueue
-            - Arn
+          Fn::GetAtt:
+          - OrderDeadLetterQueue
+          - Arn
         maxReceiveCount: 30
   OrderDeadLetterQueue:
-    Type: 'AWS::SQS::Queue'
+    Type: AWS::SQS::Queue
     Properties:
       QueueName: sl-order-gateway-stage-dlq
       MessageRetentionPeriod: 345600
   DeliveryStreamRole:
-    Type: 'AWS::IAM::Role'
+    Type: AWS::IAM::Role
     DeletionPolicy: Delete
     Properties:
       RoleName: sl-order-gateway-stage-role
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
-        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-        - 'arn:aws:iam::aws:policy/AmazonSQSFullAccess'
+      - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/AmazonSQSFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
 Outputs:
   ServerlessDeploymentBucketName:
     Value:
@@ -269,17 +261,16 @@ Outputs:
   QueueUnderscoreorderLambdaFunctionQualifiedArn:
     Description: Current Lambda function version
     Value:
-      Ref: >-
-        QueueUnderscoreorderLambdaVersion3SEOTNJMrpgidXfI40GpJ1lVJ4ocqm1hruwzHxzYg
+      Ref: QueueUnderscoreorderLambdaVersion3SEOTNJMrpgidXfI40GpJ1lVJ4ocqm1hruwzHxzYg
   ServiceEndpoint:
     Description: URL of the service endpoint
     Value:
-      'Fn::Join':
-        - ''
-        - - 'https://'
-          - Ref: ApiGatewayRestApi
-          - .execute-api.
-          - Ref: 'AWS::Region'
-          - .
-          - Ref: 'AWS::URLSuffix'
-          - /stage
+      Fn::Join:
+      - ''
+      - - https://
+        - Ref: ApiGatewayRestApi
+        - .execute-api.
+        - Ref: AWS::Region
+        - .
+        - Ref: AWS::URLSuffix
+        - /stage
