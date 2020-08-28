@@ -13,7 +13,7 @@ try {
     let fileContents = fs.readFileSync('sam-template.yml', 'utf8');
     let data = yaml.safeLoad(fileContents);
     // update json object
-    data.Resources[0].Properties.CodeUri = "/dist/order_queue.zip";
+    data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
     // convert to string object
     const stringData = YAML.stringify(data);
     // try to save as yml
