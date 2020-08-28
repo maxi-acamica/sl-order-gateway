@@ -40,7 +40,7 @@ jobs:
         AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET }}
       with:
-        args: package --template-file sam-template-edited.yml --s3-bucket ${{ env.AWS_S3_BUCKET }} --output-template-file templates/packaged-template.yml
+        args: package --template-file templates/sam-template-edited.yml --s3-bucket ${{ env.AWS_S3_BUCKET }} --output-template-file templates/packaged-template.yml
     #Editar el template convertido con la data devuelta desde package 
     - name:  Edit Template
       run: npm run generate-template ${{ env.GITHASH }}
