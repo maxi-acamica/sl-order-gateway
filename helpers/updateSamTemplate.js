@@ -14,7 +14,12 @@ try {
     let data = yaml.safeLoad(fileContents);
     console.log(data);
     // update json object
-    data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
+    if (data.Resources[0] !== undefined)
+    {
+        data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
+    } else {
+        data.Resources.Properties.CodeUri = "./dist/queue_order.zip";
+    }
     // convert to string object
     const stringData = YAML.stringify(data);
     // try to save as yml
