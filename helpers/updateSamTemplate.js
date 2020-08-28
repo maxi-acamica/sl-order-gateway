@@ -15,7 +15,7 @@ try {
     console.log(data);
     // convert to string object
     const stringData = YAML.stringify(data);
-    console.log(strinData);
+    console.log(stringData);
     
     // update json object
     if (data.Resources[0] !== undefined)
