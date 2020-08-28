@@ -12,6 +12,7 @@ const YAML = require('json-to-pretty-yaml');
 try {
     let fileContents = fs.readFileSync('sam-template.yml', 'utf8');
     let data = yaml.safeLoad(fileContents);
+    console.log(data);
     // update json object
     data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
     // convert to string object
