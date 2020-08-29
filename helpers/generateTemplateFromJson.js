@@ -1,16 +1,22 @@
 const fs = require('fs');
 const YAML = require('json-to-pretty-yaml');
 const yaml = require('js-yaml');
+const path = require('path')
+
 //Get template from dist
 const jsonTemplate = require('../dist/cloudformation-template-update-stack.json');
 
 let codeUri;
 
 try {
+    //Get variables from script 
     const GITHASH = process.argv.slice(2);
     console.log(GITHASH);
+    //path
+    basePath = path.resolve(__dirname + '/../');
+
     //get template after aws package
-    let fileContents = fs.readFileSync('templates/packaged-template.yml', 'utf8');
+    let fileContents = fs.readFileSync(basePath+'/dist/packaged-template.yml', 'utf8');
     let dataTemplatePackaged = yaml.safeLoad(fileContents);
     console.log(dataTemplatePackaged);
     console.log(JSON.stringify(dataTemplatePackaged));
@@ -36,7 +42,7 @@ try {
     // convert to string object
     const stringDataTemplate = YAML.stringify(jsonTemplate);
     //Aca se guarda el hash yel bucket que se obtienen de templatePackaged
-    const nameTemplate = 'templates/'+GTIHASH+'.yml';
+    const nameTemplate = basePath+'/dist/'+GTIHASH+'.yml';
     fs.writeFile(nameTemplate, stringDataTemplate, () => {return true});
 } catch (e){
     console.error(e);

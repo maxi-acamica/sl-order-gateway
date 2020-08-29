@@ -23,8 +23,8 @@ jobs:
         ${{ secrets.ENV }}
         EOF
     - run: npm run build # ESTE HAY Q EDITAR XQ EL WEBPACK NO SE HACE MAS
-    - run: sls sam export --output templates/sam-template.yml
-    - run: sls package --config=serverless.yml --package=dist
+    - run: sls sam export --output dist/sam-template.yml
+    - run: sls package --config serverless.yml --package dist
     - run: npm run update-sam-template
     - run: echo ::set-env name=GITHASH::$(git rev-parse --short=10 HEAD)
     - run: echo ::set-env name=AWS_REGION::us-east-1
@@ -40,7 +40,7 @@ jobs:
         AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET }}
       with:
-        args: package --template-file templates/sam-template-edited.yml --s3-bucket ${{ env.AWS_S3_BUCKET }} --output-template-file templates/packaged-template.yml
+        args: package --template-file dist/sam-template-edited.yml --s3-bucket ${{ env.AWS_S3_BUCKET }} --output-template-file dist/packaged-template.yml
     #Editar el template convertido con la data devuelta desde package 
     - name:  Edit Template
       run: npm run generate-template ${{ env.GITHASH }}

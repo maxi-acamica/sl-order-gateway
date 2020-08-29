@@ -10,7 +10,7 @@ const YAML = require('json-to-pretty-yaml');
  */
 
 try {
-    let fileContents = fs.readFileSync('templates/sam-template.yml', 'utf8');
+    let fileContents = fs.readFileSync('dist/sam-template.yml', 'utf8');
     let data = yaml.safeLoad(fileContents);
     console.log(data);
     // get real path
@@ -31,7 +31,7 @@ try {
     console.log(stringData);
     
     // try to save as yml
-    fs.writeFile('templates/sam-template-edited.yml', stringData, () => {return true});
+    fs.writeFile(basePath+'/dist/sam-template-edited.yml', stringData, () => {return true});
 
     console.log('sam Yml fiel updated successfully');
 } catch (e) {

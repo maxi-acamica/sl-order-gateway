@@ -36,7 +36,7 @@
         "offline": "serverless offline --env dev",
         "lint": "tslint -p tsconfig.json -c tslint.json",
         "build": "serverless webpack",
-        "postbuild": "mkdir dist templates && cp .webpack/queue_order/src/order/* dist/ && cp template.yml dist/",
+        "postbuild": "mkdir dist templates && cp .webpack/queue_order/src/order/* dist/",
         "generate-template": "node helpers/generateTemplateFromJson.js",
         "update-sam-template": "node helpers/updateSamTemplate.js $VAR"
     }
