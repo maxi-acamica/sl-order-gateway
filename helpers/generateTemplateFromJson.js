@@ -13,6 +13,7 @@ try {
     let fileContents = fs.readFileSync('templates/packaged-template.yml', 'utf8');
     let dataTemplatePackaged = yaml.safeLoad(fileContents);
     console.log(dataTemplatePackaged);
+    console.log(JSON.stringify(dataTemplatePackaged));
     // update json object
 
     if (dataTemplatePackaged.Resources[0] !== undefined)

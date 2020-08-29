@@ -20,11 +20,11 @@ try {
     // update json object
     if (data.Resources[0] !== undefined)
     {
-        data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
-        console.log(data.Resources[0].Properties);
+        data.Resources[0].SlOrderGatewayStageQueue_order.Properties.CodeUri = "./dist/queue_order.zip";
+        console.log(data.Resources[0].SlOrderGatewayStageQueue_order.Properties);
     } else {
-        console.log(data.Resources.Properties);
-        data.Resources.Properties.CodeUri = "./dist/queue_order.zip";
+        console.log(data.Resources.SlOrderGatewayStageQueue_order.Properties);
+        data.Resources.SlOrderGatewayStageQueue_order.Properties.CodeUri = "./dist/queue_order.zip";
     }
     
     // try to save as yml
