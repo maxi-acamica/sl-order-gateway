@@ -21,9 +21,9 @@ try {
     if (data.Resources[0] !== undefined)
     {
         data.Resources[0].Properties.CodeUri = "./dist/queue_order.zip";
-        console.log(data.Resources[0].Properties);
+        console.log(data.Resources[0].SlOrderGatewayStageQueue_order.Properties);
     } else {
-        console.log(data.Resources.Properties);
+        console.log(data.Resources.SlOrderGatewayStageQueue_order.Properties);
         data.Resources.Properties.CodeUri = "./dist/queue_order.zip";
     }
     
