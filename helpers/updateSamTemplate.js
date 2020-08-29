@@ -13,9 +13,6 @@ try {
     let fileContents = fs.readFileSync('templates/sam-template.yml', 'utf8');
     let data = yaml.safeLoad(fileContents);
     console.log(data);
-    // convert to string object
-    const stringData = YAML.stringify(data);
-    console.log(stringData);
     
     // update json object
     if (data.Resources[0] !== undefined)
@@ -26,6 +23,10 @@ try {
         console.log(data.Resources.SlOrderGatewayStageQueue_order.Properties);
         data.Resources.SlOrderGatewayStageQueue_order.Properties.CodeUri = "./dist/queue_order.zip";
     }
+
+    // convert to string object
+    const stringData = YAML.stringify(data);
+    console.log(stringData);
     
     // try to save as yml
     fs.writeFile('templates/sam-template-edited.yml', stringData, () => {return true});
