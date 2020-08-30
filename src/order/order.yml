@@ -1,8 +1,8 @@
-queue_order:
+queueOrder:
   handler: src/order/index.input
   events:
     - http:
-        path: queue_order
+        path: queue-order
         method: post
         cors: true
 

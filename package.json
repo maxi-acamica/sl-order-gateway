@@ -35,8 +35,8 @@
     "scripts": {
         "offline": "serverless offline --env dev",
         "lint": "tslint -p tsconfig.json -c tslint.json",
-        "build": "serverless webpack",
-        "postbuild": "mkdir dist templates && cp .webpack/queue_order/src/order/* dist/",
+        "build": " aws cloudformation package     --template-file ./sam-template.yml  --s3-bucket serverless-bucket-order   --output-template-file packaged-template.yml",
+        "postbuild": "mkdir dist && cp .webpack/queueOrder/src/order/* dist/",
         "generate-template": "node helpers/generateTemplateFromJson.js",
         "update-sam-template": "node helpers/updateSamTemplate.js $VAR"
     }
