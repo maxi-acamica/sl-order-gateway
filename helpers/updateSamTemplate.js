@@ -31,7 +31,7 @@ try {
     console.log(stringData);
     
     // try to save as yml
-    fs.writeFile(basePath+'/dist/sam-template-edited.yml', stringData, () => {return true});
+    fs.writeFile(basePath+'/dist/sam-template.yml', stringData, () => {return true});
 
     console.log('sam Yml fiel updated successfully');
 } catch (e) {
