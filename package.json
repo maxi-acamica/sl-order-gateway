@@ -34,8 +34,8 @@
     "scripts": {
         "offline": "serverless offline --env dev",
         "lint": "tslint -p tsconfig.json -c tslint.json",
-        "build": "sls package --config=serverless.yml --package=dist",
-        "postbuild": "sls sam export --output ./sam-template.yml",
+        "build": "sls sam export --output dist/sam-template.yml",
+        "postbuild": "sls webpack",
         "generate-template": "node helpers/generateTemplateFromJson.js",
         "update-sam-template": "node helpers/updateSamTemplate.js $VAR"
     }
