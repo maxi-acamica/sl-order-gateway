@@ -26,7 +26,7 @@ jobs:
     #- run: sls sam export --output dist/sam-template.yml
     - run: cp -r .webpack/queueOrder/src/order/* dist/
     #- run: sls package --config serverless.yml --package dist
-    #- run: npm run update-sam-template
+    - run: npm run update-sam-template
     - run: echo ::set-env name=GITHASH::$(git rev-parse --short=10 HEAD)
     - run: echo ::set-env name=AWS_REGION::us-east-1
     - run: echo ::set-env name=AWS_S3_BUCKET::serverless-bucket-order

@@ -37,6 +37,6 @@
         "build": "mkdir dist && sls sam export --output dist/sam-template.yml",
         "postbuild": "sls webpack",
         "generate-template": "node helpers/generateTemplateFromJson.js",
-        "update-sam-template": "node helpers/updateSamTemplate.js $VAR"
+        "update-sam-template": "node helpers/updateSamTemplate.js"
     }
 }
