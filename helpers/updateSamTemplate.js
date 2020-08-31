@@ -11,37 +11,45 @@ const  _forIn = require ("lodash.forin");
  * between framework and sam file
  */
 
-function omitDeep(obj) {
+function retroCompatibilitySam(obj) {
     _forIn(obj, function(value, key) {
       if (_isObject(value)) {
-        if (key === 'responses' && obj[key].hasOwnProperty('200')) {
+        if (key === 'responses' && obj[key].hasOwnProperty(200)) {
           console.log('found 200! ');
-          delete obj[key];
+          const resp200 = obj[key]['200'];
+          //aux
+          delete obj[key]['200'];
+          //reuse object
+          obj[key]["\'200\'"] = resp200;
         }
-        omitDeep(value);
+
+        if (obj[key].hasOwnProperty('Type') && obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Function') {
+          console.log('function: '+ key);
+          const toDashLower = key.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
+          obj[key]['Properties']['FunctionName'] = toDashLower; 
+        }
+        retroCompatibilitySam(value);
       } else if (key === 'CodeUri') {
           console.log('found!');
-        delete obj[key];
-      } else if (typeof value === 'string' && value.includes("'")) {
-        obj[key] = value.replace(/'/g,'')
+          delete obj[key];
       } 
     });
   }
 
-try {
-    let fileContents = fs.readFileSync('dist/sam-template.yml', 'utf8');
+try {   
+
+    let fileContents = fs.readFileSync('dist/sam-template.yml', 'utf-8');
     let data = yaml.safeLoad(fileContents);
     //console.log(data);
     // get real path
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
     // update json object
-    omitDeep(data);
+    retroCompatibilitySam(data);
 
     // convert to string object
     const stringData = YAML.stringify(data);
     console.log(stringData);
-    
     // try to save as yml
     fs.writeFile(basePath+'/dist/sam-template.yml', stringData, () => {return true});
 

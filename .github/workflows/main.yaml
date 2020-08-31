@@ -20,7 +20,7 @@ jobs:
         ${{ secrets.ENV }}
         EOF
     - run: npm run build # ESTE HAY Q EDITAR XQ EL WEBPACK NO SE HACE MAS
-    - run: cp -r .webpack/queueOrder/src/order/* dist/
+    - run: cp -r .webpack/queueOrder/* dist/
     - run: npm run update-sam-template
     - run: echo ::set-env name=GITHASH::$(git rev-parse --short=10 HEAD)
     - run: echo ::set-env name=AWS_REGION::us-east-1

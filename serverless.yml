@@ -29,7 +29,7 @@ custom:
   globals:
     role: ${self:service}-${self:provider.stage}-role
     sqs:
-      order: ${self:service}-${self:provider.stage}
+      order: ${self:service}-${self:provider.stage}-sqs
   webpack:
     webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
     includeModules: false   # Node modules configuration for packaging
