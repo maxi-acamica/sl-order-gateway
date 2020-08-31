@@ -24,7 +24,7 @@ jobs:
     - run: npm run update-sam-template
     - run: echo ::set-env name=GITHASH::$(git rev-parse --short=10 HEAD)
     - run: echo ::set-env name=AWS_REGION::us-east-1
-    - run: echo ::set-env name=AWS_S3_BUCKET::serverless-bucket-order
+    - run: echo ::set-env name=AWS_S3_BUCKET::acamica-serverless-deployments
     # Upload files to sentry and remove index.js.map (temp)
     # REPLACE based on the project name in sentry
     - run: sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org=acamica-com --project=${{ github.event.repository.name }} files ${{ env.GITHASH }} upload-sourcemaps --ext map --ext js ./dist --url-prefix "/var/task/" && rm dist/index.js.map
