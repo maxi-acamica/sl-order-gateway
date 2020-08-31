@@ -14,6 +14,10 @@ const  _forIn = require ("lodash.forin");
 function omitDeep(obj) {
     _forIn(obj, function(value, key) {
       if (_isObject(value)) {
+        if (key === 'responses' && obj[key].hasOwnProperty('200')) {
+          console.log('found 200! ');
+          delete obj[key];
+        }
         omitDeep(value);
       } else if (key === 'CodeUri') {
           console.log('found!');
@@ -30,7 +34,7 @@ try {
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
     // update json object
-    omitDeep(data)
+    omitDeep(data); 
 
     // convert to string object
     const stringData = YAML.stringify(data);
