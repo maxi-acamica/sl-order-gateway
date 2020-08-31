@@ -27,7 +27,7 @@ jobs:
     - run: echo ::set-env name=AWS_S3_BUCKET::acamica-serverless-deployments
     # Upload files to sentry and remove index.js.map (temp)
     # REPLACE based on the project name in sentry
-    - run: sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org=acamica-com --project=${{ github.event.repository.name }} files ${{ env.GITHASH }} upload-sourcemaps --ext map --ext js ./dist --url-prefix "/var/task/" && rm dist/index.js.map
+    - run: sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org=acamica-com --project=${{ github.event.repository.name }} files ${{ env.GITHASH }} upload-sourcemaps --ext map --ext js ./dist/**/**/ --url-prefix "/var/task/" && rm dist/**/**/index.js.map
     - name: Package
       uses: chriscoffee/sam-github-actions@master
       env:
