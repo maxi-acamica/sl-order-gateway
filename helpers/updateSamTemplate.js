@@ -2,6 +2,8 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const path = require('path')
 const YAML = require('json-to-pretty-yaml');
+const  _isObject = require ("lodash.isobject");
+const  _forIn = require ("lodash.forin");
 
 /**
  * Helper used to edit yaml sam file
@@ -9,22 +11,28 @@ const YAML = require('json-to-pretty-yaml');
  * between framework and sam file
  */
 
+ 
+
+function omitDeep(obj) {
+    _forIn(obj, function(value, key) {
+      if (_isObject(value)) {
+        omitDeep(value);
+      } else if (key === 'CodeUri') {
+          console.log('found!');
+        delete obj[key];
+      }
+    });
+  }
+
 try {
     let fileContents = fs.readFileSync('dist/sam-template.yml', 'utf8');
     let data = yaml.safeLoad(fileContents);
-    console.log(data);
+    //console.log(data);
     // get real path
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
     // update json object
-    if (data.Resources[0] !== undefined)
-    {
-        data.Resources[0].SlOrderGatewayStageQueue_order.Properties.CodeUri = basePath+"/dist/queue_order.zip";
-        console.log(data.Resources[0].SlOrderGatewayStageQueue_order.Properties);
-    } else {
-        console.log(data.Resources.SlOrderGatewayStageQueueOrder.Properties);
-        delete(data.Resources.SlOrderGatewayStageQueueOrder.Properties.CodeUri);
-    }
+    omitDeep(data)
 
     // convert to string object
     const stringData = YAML.stringify(data);

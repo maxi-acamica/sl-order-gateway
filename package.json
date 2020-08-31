@@ -7,12 +7,16 @@
     "dependencies": {
         "aws-lambda": "^0.1.2",
         "aws-sdk": "^2.553.0",
+        "lodash.forin": "^4.4.0",
+        "lodash.isobject": "^3.0.2",
         "serverless-dotenv-plugin": "^3.0.0",
         "serverless-plugin-typescript": "^1.1.9",
+        "serverless-sam": "^0.2.0",
         "serverless-webpack": "^5.2.0",
         "source-map-support": "^0.5.10",
         "typescript": "^3.2.4",
-        "serverless-sam": "^0.2.0"
+        "js-yaml": "^3.14.0",
+        "json-to-pretty-yaml": "^1.2.2"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.17",
@@ -27,9 +31,7 @@
         "typescript": "^3.2.4",
         "webpack": "^4.29.0",
         "serverless-offline": "^6.5.0",
-        "webpack-cli": "^3.3.12",
-        "js-yaml": "^3.14.0",
-        "json-to-pretty-yaml": "^1.2.2"
+        "webpack-cli": "^3.3.12"
     },
     "scripts": {
         "offline": "serverless offline --env dev",
