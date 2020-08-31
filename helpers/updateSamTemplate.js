@@ -11,8 +11,6 @@ const  _forIn = require ("lodash.forin");
  * between framework and sam file
  */
 
- 
-
 function omitDeep(obj) {
     _forIn(obj, function(value, key) {
       if (_isObject(value)) {
