@@ -22,7 +22,9 @@ function omitDeep(obj) {
       } else if (key === 'CodeUri') {
           console.log('found!');
         delete obj[key];
-      }
+      } else if (typeof value === 'string' && value.includes("'")) {
+        obj[key] = value.replace(/'/g,'')
+      } 
     });
   }
 
@@ -34,7 +36,7 @@ try {
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
     // update json object
-    omitDeep(data); 
+    omitDeep(data);
 
     // convert to string object
     const stringData = YAML.stringify(data);
