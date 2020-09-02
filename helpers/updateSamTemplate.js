@@ -42,6 +42,8 @@ function retroCompatibilitySam(obj) {
             console.log('Api found in:', key);
             
             obj["APIBasePathMapping"]["Properties"]["RestApiId"] = {Ref: key};
+            obj["APIBasePathMapping"]["Properties"]["Stage"] = {Ref: key+'.Stage'};
+
         }
         // Change Name format
         if (obj[key].hasOwnProperty('Type') && obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Function') {
