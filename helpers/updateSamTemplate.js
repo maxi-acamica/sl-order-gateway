@@ -4,6 +4,8 @@ const path = require('path')
 const YAML = require('json-to-pretty-yaml');
 const  _isObject = require ("lodash.isobject");
 const  _forIn = require ("lodash.forin");
+// load .env file config
+require('dotenv').config();
 
 /**
  * Helper used to edit yaml sam file
@@ -19,7 +21,7 @@ function retroCompatibilitySam(obj) {
         obj[key]["API"] = {
              "Type": "AWS::Serverless::Api",
              "Properties": {
-                "StageName": "!Sub '${Stage}-${ProjectId}'",
+                "StageName": `${process.env.STAGE}-${process.env.PROJECTID}`,
                 "OpenApiVersion": "2.0",
                 "Cors": {
                    "AllowHeaders": "'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization'",
@@ -31,7 +33,7 @@ function retroCompatibilitySam(obj) {
              "Type": "AWS::ApiGateway::BasePathMapping",
              "Properties": {
                 "BasePath": "order-gateway",
-                "DomainName": "testing-stage.acamica.net",
+                "DomainName": `{{resolve:ssm:/${process.env.STAGE}/domain-name:1}}`,
                 "RestApiId": "!Ref API",
                 "Stage": "staging"
              }
