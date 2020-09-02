@@ -13,7 +13,7 @@ jobs:
         node-version: '12.x'
     #- run: curl -sL https://sentry.io/get-cli/ | bash
     #- run: echo //registry.npmjs.org/:_authToken=${{ secrets.npm_token }} > .npmrc
-    - run: npm install -g serverless
+    #- run: npm install -g serverless
     - run: npm install
     - run: | # cp .env.example .env
         cat > .env << EOF
