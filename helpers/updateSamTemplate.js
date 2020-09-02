@@ -40,7 +40,6 @@ function retroCompatibilitySam(obj) {
         // Asociate API key on APIBasePathMapping
         if (obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Api') {
             console.log('Api found in:', key);
-            Slordertasdsa
             obj["APIBasePathMapping"]["Properties"]["RestApiId"] = {Ref: key};
             obj["APIBasePathMapping"]["Properties"]["Stage"] = {Ref: key+'.Stage'};
 
