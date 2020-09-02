@@ -13,6 +13,30 @@ const  _forIn = require ("lodash.forin");
 
 function retroCompatibilitySam(obj) {
     _forIn(obj, function(value, key) {
+      // Add mappings objects to 
+      if(key === 'Resources') {
+        // obj["Parameters"] =   
+        obj[key]["API"] = {
+             "Type": "AWS::Serverless::Api",
+             "Properties": {
+                "StageName": "!Sub '${Stage}-${ProjectId}'",
+                "OpenApiVersion": "2.0",
+                "Cors": {
+                   "AllowHeaders": "'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization'",
+                   "AllowOrigin": "'*'"
+                }
+             }
+            };
+        obj[key]["APIBasePathMapping"]= {
+             "Type": "AWS::ApiGateway::BasePathMapping",
+             "Properties": {
+                "BasePath": "order-gateway",
+                "DomainName": "testing-stage.acamica.net",
+                "RestApiId": "!Ref API",
+                "Stage": "staging"
+             }
+          };
+      }
       if (_isObject(value)) {
         if (key === 'responses' && obj[key].hasOwnProperty(200)) {
           console.log('found 200! ');
@@ -22,7 +46,6 @@ function retroCompatibilitySam(obj) {
           //reuse object
           obj[key]["\'200\'"] = resp200;
         }
-
         if (obj[key].hasOwnProperty('Type') && obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Function') {
           console.log('function: '+ key);
           const toDashLower = key.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
@@ -34,7 +57,7 @@ function retroCompatibilitySam(obj) {
           delete obj[key];
       } 
     });
-  }
+}
 
 try {   
 
