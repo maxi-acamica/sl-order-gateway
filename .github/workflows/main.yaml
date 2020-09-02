@@ -2,7 +2,7 @@ name: Package Serverless
 on:
   push:
     branches:
-      - master
+      - my-repo
 jobs:
   deploy:
     runs-on: ubuntu-latest
