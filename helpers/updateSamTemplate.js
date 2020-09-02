@@ -15,31 +15,20 @@ require('dotenv').config();
 
 function retroCompatibilitySam(obj) {
     _forIn(obj, function(value, key) {
-      // Add mappings objects to 
-      if(key === 'Resources') {
-        // obj["Parameters"] =   
-        obj[key]["API"] = {
-             "Type": "AWS::Serverless::Api",
-             "Properties": {
-                "StageName": `${process.env.STAGE}-${process.env.PROJECTID}`,
-                "OpenApiVersion": "2.0",
-                "Cors": {
-                   "AllowHeaders": "'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization'",
-                   "AllowOrigin": "'*'"
-                }
-             }
-            };
+      // Add mappings objects to Resources
+      if(key === 'Resources' && !obj[key].hasOwnProperty("APIBasePathMapping")) {
         obj[key]["APIBasePathMapping"]= {
              "Type": "AWS::ApiGateway::BasePathMapping",
              "Properties": {
                 "BasePath": "order-gateway",
                 "DomainName": `{{resolve:ssm:/${process.env.STAGE}/domain-name:1}}`,
-                "RestApiId": "!Ref API",
+                "RestApiId": "!Ref 'API'",
                 "Stage": "staging"
              }
           };
       }
       if (_isObject(value)) {
+        // To API responses, add quotes on index 200
         if (key === 'responses' && obj[key].hasOwnProperty(200)) {
           console.log('found 200! ');
           const resp200 = obj[key]['200'];
@@ -48,6 +37,13 @@ function retroCompatibilitySam(obj) {
           //reuse object
           obj[key]["\'200\'"] = resp200;
         }
+        // Asociate API key on APIBasePathMapping
+        if (obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Api') {
+            console.log('Api found in:', key);
+            
+            obj["APIBasePathMapping"]["Properties"]["RestApiId"] = {Ref: key};
+        }
+        // Change Name format
         if (obj[key].hasOwnProperty('Type') && obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Function') {
           console.log('function: '+ key);
           const toDashLower = key.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
