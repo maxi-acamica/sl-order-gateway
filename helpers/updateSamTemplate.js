@@ -40,7 +40,7 @@ function retroCompatibilitySam(obj) {
         // Asociate API key on APIBasePathMapping
         if (obj[key]['Type'] !== undefined && obj[key]['Type'] === 'AWS::Serverless::Api') {
             console.log('Api found in:', key);
-            
+            Slordertasdsa
             obj["APIBasePathMapping"]["Properties"]["RestApiId"] = {Ref: key};
             obj["APIBasePathMapping"]["Properties"]["Stage"] = {Ref: key+'.Stage'};
 
@@ -59,11 +59,10 @@ function retroCompatibilitySam(obj) {
     });
 }
 
-try {   
-
-    let fileContents = fs.readFileSync('dist/sam-template.yml', 'utf-8');
+try {
+    let fileContents = fs.readFileSync('dist/sam-template.yml');
     let data = yaml.safeLoad(fileContents);
-    //console.log(data);
+    console.log(JSON.stringify(data), '\n\n');
     // get real path
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
