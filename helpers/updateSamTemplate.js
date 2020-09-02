@@ -62,7 +62,6 @@ function retroCompatibilitySam(obj) {
 try {
     let fileContents = fs.readFileSync('dist/sam-template.yml');
     let data = yaml.safeLoad(fileContents);
-    console.log(JSON.stringify(data), '\n\n');
     // get real path
     basePath = path.resolve(__dirname + '/../');
     console.log(basePath);
